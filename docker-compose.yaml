@@ -3,17 +3,19 @@ version: '3.8'
 services:
   server:
     container_name: ${PROJECT_NAME}-server
+    stdin_open: true
+    tty: true
     build:
       context: ./
       dockerfile: ./Dockerfile
     depends_on:
       - qr_db
     env_file: .env
-    command: sh -c "uvicorn app.src.main:app --reload --port=8000 --host=0.0.0.0"
     ports:
       - ${SERVICE_PORT}:${SERVICE_PORT}
     volumes:
       - .:/code
+    restart: always
 
   qr_db:
     image: postgres:15-alpine
@@ -23,6 +25,8 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5433:5432"
     expose:
       - "5433"
     volumes:
