@@ -7,7 +7,7 @@ from app.routers.user_router import UserRouter
 # Create tables in database when the application starts up.
 create_tables()
 
-app = FastAPI(title="API - QR")
+app = FastAPI(title="API - QR Codes")
 
 app.include_router(QRCodeRouter)
 app.include_router(UserRouter)

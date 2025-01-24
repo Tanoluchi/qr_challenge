@@ -1,0 +1,46 @@
+from uuid import UUID
+import qrcode
+import os
+
+from pydantic import HttpUrl
+
+from PIL import Image
+
+from app.configs.logger import logger
+
+# Directory to store generated QR codes
+QR_CODE_DIRECTORY = "static/qr_codes"
+
+def generate_qr_image(
+        qr_uuid: UUID,
+        url: HttpUrl,
+        color: str,
+        size: int,
+    ) -> str:
+    try:
+        os.makedirs(QR_CODE_DIRECTORY, exist_ok=True)
+
+        file_name = f"qr_{qr_uuid}.png"
+        file_path = os.path.join(QR_CODE_DIRECTORY, file_name)
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            logger.info(f"Deleted existing QR code: {file_path}")
+
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_H,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(url)
+        qr.make(fit=True)
+        # Generate image
+        img = qr.make_image(fill_color=color, back_color="white")
+        img = img.resize((size, size), Image.Resampling.LANCZOS)
+        # Save image
+        img.save(file_path)
+        return file_path
+    except Exception as e:
+        logger.error(f"Error generating QR code: {e}")
+        return ""
