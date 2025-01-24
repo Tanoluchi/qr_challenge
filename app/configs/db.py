@@ -18,3 +18,13 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def create_tables():
+    from app.models.user_model import User
+    from app.models.qr_model import QRCode
+    from app.models.scan_model import Scan
+
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        raise

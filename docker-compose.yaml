@@ -8,6 +8,7 @@ services:
     build:
       context: ./
       dockerfile: ./Dockerfile
+    command: sh -c "uvicorn app.src.main:app --reload --port=8084 --host=0.0.0.0"
     depends_on:
       - qr_db
     env_file: .env

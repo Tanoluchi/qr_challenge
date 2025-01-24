@@ -5,6 +5,7 @@ API_NAME = ${SRC}-server
 # Commands
 compose_cmd = docker-compose
 down_cmd = $(compose_cmd) down --remove-orphans
+attach_cmd = docker attach $(API_NAME)
 
 down:
 	@echo "Removing containers and orphans..."
@@ -19,6 +20,9 @@ bash:
 
 test:
 	docker exec -w /app/tests $(API_NAME) pytest -v -s
+
+pdb:
+	@$(attach_cmd)
 
 start:
 	@$(compose_cmd) start
