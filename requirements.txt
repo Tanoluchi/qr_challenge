@@ -4,3 +4,7 @@ python-dotenv
 SQLAlchemy
 psycopg2
 pyjwt
+pydantic[email]
+qrcode
+pillow
+passlib[bcrypt]
