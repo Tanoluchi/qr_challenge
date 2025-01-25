@@ -62,13 +62,10 @@ def decode_token(token: str):
         raise ValueError(f"Error decoding the token: {e}")
 
 def get_current_user(
-        request: Request,
+        payload: dict,
         user_service: UserService = Depends()
 ):
     try:
-        logger.debug(f"Trying to get current user from token with request: {request}")
-        token = get_token_from_headers_or_cookies(request)
-        payload = decode_token(token)
         email = payload.get("user")
         if email is None:
             logger.warning("Email not found in payload data")
