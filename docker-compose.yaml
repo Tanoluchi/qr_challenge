@@ -1,14 +1,13 @@
 version: '3.8'
 
 services:
-  server:
+  app:
     container_name: ${PROJECT_NAME}-server
     stdin_open: true
     tty: true
     build:
       context: ./
       dockerfile: ./Dockerfile
-    command: sh -c "uvicorn app.src.main:app --reload --port=8084 --host=0.0.0.0"
     depends_on:
       - qr_db
     env_file: .env
@@ -23,9 +22,9 @@ services:
     container_name: qr_db_container
     restart: always
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5433:5432"
     expose:
