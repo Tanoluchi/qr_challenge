@@ -8,3 +8,4 @@ pydantic[email]
 qrcode
 pillow
 passlib[bcrypt]
+requests

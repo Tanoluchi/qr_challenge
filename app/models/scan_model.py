@@ -1,7 +1,9 @@
+from datetime import datetime
 from sqlalchemy import (
     Column,
     String,
     ForeignKey,
+    DateTime
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
@@ -16,6 +18,7 @@ class Scan(Base):
     ip = Column(String(45), nullable=True)
     country = Column(String(100), nullable=True)
     timezone = Column(String(100), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     # Relationship to QR codes
     qr_code = relationship("QRCode", back_populates="scans")
