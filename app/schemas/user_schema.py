@@ -1,12 +1,12 @@
 from pydantic import BaseModel, EmailStr, Field
 
 class CreateUserSchema(BaseModel):
-    email: EmailStr
-    password_hash: str
+    email: EmailStr = Field(examples=['example@example.com'])
+    password_hash: str = Field(examples=['password'])
 
 class LoginUserSchema(BaseModel):
-    email: EmailStr
-    password: str
+    email: EmailStr = Field(examples=['example@example.com'])
+    password: str = Field(examples=['password'])
 
 class UserSchema(BaseModel):
     email: EmailStr

@@ -6,9 +6,9 @@ from datetime import datetime
 
 
 class CreateQRCodeSchema(BaseModel):
-    url: HttpUrl
-    color: Optional[str] = Field("black")  # Default color is black
-    size: Optional[int] = Field(300)  # Default size is 300x300
+    url: HttpUrl = Field(examples=['https://google.com/'])
+    color: Optional[str] = Field("black", description="The color must be in hexadecimal", examples=['#0000FF'])  # Default color is black
+    size: Optional[int] = Field(300, description="The size must be integer", examples=['400'])  # Default size is 300x300
 
     @property
     def url_str(self):
@@ -16,10 +16,9 @@ class CreateQRCodeSchema(BaseModel):
 
 
 class UpdateQRCodeSchema(BaseModel):
-    color: Optional[str] = Field(None)
-    size: Optional[int] = Field(None)
-    url: Optional[HttpUrl] = Field(None)
-
+    color: Optional[str] = Field(None, description="The field is optional and must be color in hexadecimal", examples=['#0000FF'])
+    size: Optional[int] = Field(None, description="The field is optional")
+    url: Optional[HttpUrl] = Field(None, description="The field is optional")
 
 
 class QRCodeSchema(BaseModel):
