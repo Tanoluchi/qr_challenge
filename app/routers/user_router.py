@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 from fastapi.encoders import jsonable_encoder
 
 from app.schemas.user_schema import (
@@ -12,17 +12,17 @@ from app.helpers.auth_user import (
     verify_password,
     hash_password,
     set_token_in_cookie,
-    get_current_user
 )
 from app.services.user_service import UserService
 
 UserRouter = APIRouter(
     prefix="/user",
-    tags=["user"],
+    tags=["Users"],
 )
 
 @UserRouter.get("/", status_code=status.HTTP_200_OK, response_model=UserSchema)
-async def user(user: dict = Depends(get_current_user)):
+async def user(request: Request, user_service: UserService = Depends()):
+    user = user_service.get(request.state.user)
     if user is None:
         raise HTTPException(status_code=401, detail="Not authenticated")
     return UserSchema(**jsonable_encoder(user))

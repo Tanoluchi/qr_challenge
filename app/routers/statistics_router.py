@@ -1,7 +1,6 @@
 from fastapi import APIRouter ,Depends, HTTPException, status
 from uuid import UUID
 
-from app.helpers.auth_user import get_current_user
 from app.helpers.statistics_response import build_statistics_response
 from app.schemas.scan_schema import QRCodeStatisticsSchema
 from app.services.scan_service import ScanService
@@ -15,7 +14,6 @@ StatisticsRouter = APIRouter(prefix="/statistics", tags=["QR Code Metrics"])
 async def get_qr_code_scan_metrics(
         qr_uuid: UUID,
         scan_service: ScanService = Depends(),
-        user: dict = Depends(get_current_user)
 ) -> QRCodeStatisticsSchema:
     """
     Retrieve QR code scan metrics.

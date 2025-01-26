@@ -14,12 +14,14 @@ IPINFO_TOKEN = os.getenv("IPINFO_TOKEN")
 
 def is_private_ip(ip):
     try:
+        logger.debug(f"Checking if IP address is private: {ip}")
         ip_obj = ipaddress.ip_address(ip)
         return ip_obj.is_private
     except ValueError:
         return False
 
 def get_random_ip():
+    logger.debug("Generating a random IP address")
     return str(ipaddress.IPv4Address(random.randint(0, (2**32) - 1)))
 
 def get_client_ip(request: Request) -> str:

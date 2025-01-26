@@ -10,8 +10,6 @@ from passlib.context import CryptContext
 
 from dotenv import load_dotenv
 
-from app.services.user_service import UserService
-
 from app.configs.logger import logger
 
 load_dotenv()
@@ -61,23 +59,15 @@ def decode_token(token: str):
     except Exception as e:
         raise ValueError(f"Error decoding the token: {e}")
 
-def get_current_user(
-        payload: dict,
-        user_service: UserService = Depends()
-):
+def get_current_user(payload: dict):
     try:
         email = payload.get("user")
         if email is None:
             logger.warning("Email not found in payload data")
             raise Exception("Could not authenticated user")
 
-        user = user_service.get(email)
-        if not user:
-            logger.warning("User not found in the database")
-            raise Exception("User not found in the database")
-
-        logger.debug("Successfully returning current user")
-        return user
+        logger.debug("Successfully returning email user")
+        return email
     except Exception as e:
         logger.error(f"Error getting current user: {e}")
         raise HTTPException(status_code=401, detail=str(e))

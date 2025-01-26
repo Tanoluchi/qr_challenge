@@ -4,7 +4,6 @@ from app.configs.logger import logger
 
 from uuid import UUID
 
-from app.helpers.auth_user import get_current_user
 from app.helpers.ip_info import get_country_and_timezone, get_client_ip
 from app.services.qr_service import QRCodeService
 from app.services.scan_service import ScanService
@@ -21,7 +20,6 @@ async def scan_qr_code(
         request: Request,
         qr_code_service: QRCodeService = Depends(),
         scan_service: ScanService = Depends(),
-        user: dict = Depends(get_current_user)
 ):
     """
     Simulate QR scanning by retrieving QR Code information
