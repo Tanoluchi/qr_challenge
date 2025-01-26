@@ -2,7 +2,7 @@ from fastapi import Depends, APIRouter, HTTPException, status, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import FileResponse
 
-from app.helpers.qr_generator import generate_qr_image
+from app.helpers.qr_generator import generate_qr_image, is_valid_hex_color
 from app.schemas.qr_schema import (
     ListQRCodesSchema,
     CreateQRCodeSchema,
@@ -108,6 +108,9 @@ def update_qr_code(
     if not qr_code:
         logger.error("QR Code not found")
         raise HTTPException(status_code=404, detail="QR Code not found")
+
+    if qr_code_data.color and not is_valid_hex_color(qr_code_data.color):
+        raise HTTPException(status_code=400, detail=f"The color '{qr_code_data.color}' is not a valid hexadecimal code.")
 
     # Update the QR Code
     update_params = {

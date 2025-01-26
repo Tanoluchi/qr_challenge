@@ -20,17 +20,17 @@ class ScanRepository:
 
     def get_all(self, qr_code_uuid: UUID) -> Sequence[Row[tuple[Any, ...] | Any]]:
         scan_logs_query = text("""
-                SELECT 
+                SELECT
                     uuid,
-                    qr_uuid, 
-                    ip, 
+                    qr_uuid,
+                    ip,
                     country, 
                     timezone,
                     created_at
                 FROM scans
-                WHERE (:qr_uuid IS NULL OR qr_uuid = :qr_uuid)
+                WHERE (qr_uuid = :qr_uuid)
                 ORDER BY created_at DESC
-                LIMIT 1000
+                LIMIT 100
             """)
         return self.db.execute(
             scan_logs_query,
@@ -49,11 +49,11 @@ class ScanRepository:
 
     def get_total_scan(self, qr_code_uuid: UUID) -> Sequence[Row[tuple[Any, ...] | Any]]:
         total_scans_query = text("""
-                SELECT 
-                    qr_uuid, 
-                    COUNT(*) as total_scans 
-                FROM scans 
-                WHERE (:qr_uuid IS NULL OR qr_uuid = :qr_uuid)
+                SELECT
+                    qr_uuid,
+                    COUNT(*) as total_scans
+                FROM scans
+                WHERE (qr_uuid = :qr_uuid)
                 GROUP BY qr_uuid
             """)
         return self.db.execute(

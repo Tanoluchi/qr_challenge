@@ -1,6 +1,7 @@
 from uuid import UUID
 import qrcode
 import os
+import re
 
 from pydantic import HttpUrl
 
@@ -18,6 +19,7 @@ def generate_qr_image(
         size: int,
     ) -> str:
     try:
+        logger.debug(f"Generating QR Image with url: {url}, color: {color} and size: {size}")
         os.makedirs(QR_CODE_DIRECTORY, exist_ok=True)
 
         file_name = f"qr_{qr_uuid}.png"
@@ -26,7 +28,7 @@ def generate_qr_image(
         if os.path.exists(file_path):
             os.remove(file_path)
             logger.info(f"Deleted existing QR code: {file_path}")
-
+        # Create QR code
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_H,
@@ -40,7 +42,16 @@ def generate_qr_image(
         img = img.resize((size, size), Image.Resampling.LANCZOS)
         # Save image
         img.save(file_path)
+        logger.info(f"QR code saved: {file_path}")
         return file_path
     except Exception as e:
         logger.error(f"Error generating QR code: {e}")
         return ""
+
+def is_valid_hex_color(color: str) -> bool:
+    """
+        Validates if a color is a valid hexadecimal (#RRGGBB or #RGB).
+    """
+    logger.debug(f'Checking color validity for hexadecimal color: {color}')
+    HEX_COLOR_REGEX = r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+    return bool(re.match(HEX_COLOR_REGEX, color))

@@ -35,7 +35,7 @@ def build_statistics_response(total_scans, scan_logs) -> QRCodeStatisticsSchema:
                     ip=row.ip,
                     country=row.country,
                     timezone=row.timezone,
-                    created_at=row.created_at,  # Ensure `timestamp` is in your schema
+                    created_at=row.created_at,
                 )
                 for row in scan_logs
             ]
