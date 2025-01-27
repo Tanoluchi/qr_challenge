@@ -9,3 +9,6 @@ qrcode
 pillow
 passlib[bcrypt]
 requests
+pytest
+pytest-mock
+httpx

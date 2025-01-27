@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  app:
+  server:
     container_name: ${PROJECT_NAME}-server
     stdin_open: true
     tty: true

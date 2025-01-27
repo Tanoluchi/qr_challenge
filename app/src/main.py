@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.configs.db import create_tables
 from app.middleware.security_middleware import SecurityMiddleware
@@ -19,6 +20,14 @@ app.include_router(ScanerRouter)
 app.include_router(StatisticsRouter)
 
 user_service = UserService()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Add security middleware
 app.add_middleware(SecurityMiddleware)

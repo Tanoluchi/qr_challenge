@@ -19,7 +19,7 @@ bash:
 	docker exec -it $(API_NAME) bash
 
 test:
-	docker exec -w /app/tests $(API_NAME) pytest -v -s
+	docker exec -w /code/app/test $(API_NAME) pytest -v -s
 
 pdb:
 	@$(attach_cmd)
