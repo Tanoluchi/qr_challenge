@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
+from starlette.responses import JSONResponse
 
 from app.schemas.user_schema import (
     CreateUserSchema,
     UserSchema,
-    LoginUserSchema,
-    TokenSchema
+    TokenSchema,
+    LoginUserSchema
 )
 from app.helpers.auth_user import (
     create_access_token,
@@ -23,6 +23,18 @@ UserRouter = APIRouter(
 
 @UserRouter.get("/", status_code=status.HTTP_200_OK, response_model=UserSchema)
 async def user(request: Request, user_service: UserService = Depends()):
+    """
+    Get the current authenticated user.
+
+        **Args**:
+            request (Request): The FastAPI request object
+
+        **Returns**:
+            UserSchema: Contains the authenticated user information
+
+        **Raises**:
+            HTTPException: If the user is not authenticated
+    """
     user = user_service.get(request.state.user)
     if user is None:
         raise HTTPException(status_code=401, detail="Not authenticated")
@@ -33,6 +45,23 @@ async def create_user(
         user: CreateUserSchema,
         user_service: UserService = Depends()
 ):
+    """
+    Create a new user with the provided data.
+
+        **Request Body**:
+
+        - **email**: Required (string)
+        - **password**: Required (string)
+
+        **Args**:
+            user (CreateUserSchema): The user to be created
+
+        **Returns**:
+            UserSchema: Contains the created user information
+
+        **Raises**:
+            HTTPException: If the user already exists
+    """
     if user_service.get(user.email):
         raise HTTPException(status_code=400, detail=f"User with email {user.email} already exists")
 
@@ -47,12 +76,26 @@ async def authenticate_user(
         response: Response,
         user_service: UserService = Depends()
 ):
+    """
+        Authenticate a user and return an access token.
+
+        **Request Body**:
+
+        - **email**: Required (string)
+        - **password**: Required (string)
+
+        **Args**:
+            user (LoginUserSchema): The user to be authenticated
+
+        **Returns**:
+            TokenSchema: Contains the access token and user information
+
+        **Raises**:
+            HTTPException: If the user does not exist or the password is incorrect
+    """
     try:
         exist_user = user_service.get(user.email)
-        if not exist_user:
-            raise HTTPException(status_code=400, detail=f"Sorry, there was a problem, the login failed")
-
-        if not verify_password(user.password, exist_user.password_hash):
+        if not exist_user or not verify_password(user.password, exist_user.password_hash):
             raise HTTPException(
                 status_code=401,
                 detail="Sorry, there was a problem, the login failed",

@@ -35,6 +35,9 @@ def get_qr_codes(
     user = user_service.get(request.state.user)
     logger.info(f"Returning all QR codes for user: {user.email}")
     qr_codes_data = qr_code_service.get_all(user.uuid)
+    if not qr_codes_data:
+        logger.warning(f"No QR codes found for user: {user.uuid}")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No QR codes found for the given user.")
     return ListQRCodesSchema(qr_codes=jsonable_encoder(qr_codes_data))
 
 # Endpoint to generate a dynamic QR code
@@ -81,7 +84,7 @@ def generate_qr_code(
     # Return a downloadable file
     return FileResponse(file_path, media_type="image/png", filename=file_name)
 
-@QRCodeRouter.patch("/", status_code=status.HTTP_200_OK, response_model=UpdateQRCodeSchema, summary="Update QR Code")
+@QRCodeRouter.patch("/{qr_uuid}", status_code=status.HTTP_200_OK, response_model=UpdateQRCodeSchema, summary="Update QR Code")
 def update_qr_code(
         qr_uuid: uuid.UUID,
         qr_code_data: UpdateQRCodeSchema,
